@@ -5,6 +5,10 @@ import os
 import pyarrow as pa
 import pyarrow.parquet as pq
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 def create_db_connection():
     # Get database connection details from environment variables
     db_user = os.getenv('DB_USER')
@@ -68,11 +72,13 @@ def transform_acu_chunk(df):
         mask = df[col].notna()
         if mask.any():
             signals.append(pd.DataFrame({
-                'signal_id': signal_id,
-                'created_at': df.loc[mask, 'created_at'],
-                'scaled_value': df.loc[mask, col].astype(float),
-                'node': 'acu',
-                'millis': df.loc[mask, 'millis']
+                'timestamp': df.loc[mask, 'millis'],
+                'vehicle_id': 'gr24',  # Add appropriate vehicle ID
+                'name': signal_id,
+                'value': df.loc[mask, col].astype(float),
+                'raw_value': 0,  # Convert to nullable integer
+                'produced_at': df.loc[mask, 'created_at'],
+                'created_at': pd.Timestamp.now()
             }))
     
     # Process boolean columns
@@ -80,11 +86,13 @@ def transform_acu_chunk(df):
         mask = df[col].notna()
         if mask.any():
             signals.append(pd.DataFrame({
-                'signal_id': signal_id,
-                'created_at': df.loc[mask, 'created_at'],
-                'scaled_value': df.loc[mask, col].astype(float),
-                'node': 'acu',
-                'millis': df.loc[mask, 'millis']
+                'timestamp': df.loc[mask, 'millis'],
+                'vehicle_id': 'gr24',  # Add appropriate vehicle ID
+                'name': signal_id,
+                'value': df.loc[mask, col].astype(float),
+                'raw_value': 0,
+                'produced_at': df.loc[mask, 'created_at'],
+                'created_at': pd.Timestamp.now()
             }))
     
     if signals:
@@ -99,13 +107,15 @@ def process_acu_data():
     output_dir = "signals_output"
     os.makedirs(output_dir, exist_ok=True)
     
-    # Define PyArrow schema
+    # Define PyArrow schema for new format
     schema = pa.schema([
-        ('signal_id', pa.string()),
-        ('created_at', pa.timestamp('us')),
-        ('scaled_value', pa.float64()),
-        ('node', pa.string()),
-        ('millis', pa.int64())
+        ('timestamp', pa.int64()),
+        ('vehicle_id', pa.string()),
+        ('name', pa.string()),
+        ('value', pa.float64()),
+        ('raw_value', pa.int64()),
+        ('produced_at', pa.timestamp('us')),
+        ('created_at', pa.timestamp('us'))
     ])
     
     # Process in chunks to manage memory
@@ -166,11 +176,13 @@ def transform_vdm_chunk(df):
         mask = df[col].notna()
         if mask.any():
             signals.append(pd.DataFrame({
-                'signal_id': signal_id,
-                'created_at': df.loc[mask, 'created_at'],
-                'scaled_value': df.loc[mask, col].astype(float),
-                'node': 'vdm',
-                'millis': df.loc[mask, 'millis']
+                'timestamp': df.loc[mask, 'millis'],
+                'vehicle_id': 'gr24',
+                'name': signal_id,
+                'value': df.loc[mask, col].astype(float),
+                'raw_value': 0,
+                'produced_at': df.loc[mask, 'created_at'],
+                'created_at': pd.Timestamp.now()
             }))
     
     # Process boolean columns
@@ -178,11 +190,13 @@ def transform_vdm_chunk(df):
         mask = df[col].notna()
         if mask.any():
             signals.append(pd.DataFrame({
-                'signal_id': signal_id,
-                'created_at': df.loc[mask, 'created_at'],
-                'scaled_value': df.loc[mask, col].astype(float),
-                'node': 'vdm',
-                'millis': df.loc[mask, 'millis']
+                'timestamp': df.loc[mask, 'millis'],
+                'vehicle_id': 'gr24',
+                'name': signal_id,
+                'value': df.loc[mask, col].astype(float),
+                'raw_value': 0,
+                'produced_at': df.loc[mask, 'created_at'],
+                'created_at': pd.Timestamp.now()
             }))
     
     if signals:
@@ -198,11 +212,13 @@ def process_vdm_data():
     
     # Define PyArrow schema
     schema = pa.schema([
-        ('signal_id', pa.string()),
-        ('created_at', pa.timestamp('us')),
-        ('scaled_value', pa.float64()),
-        ('node', pa.string()),
-        ('millis', pa.int64())
+        ('timestamp', pa.int64()),
+        ('vehicle_id', pa.string()),
+        ('name', pa.string()),
+        ('value', pa.float64()),
+        ('raw_value', pa.int64()),
+        ('produced_at', pa.timestamp('us')),
+        ('created_at', pa.timestamp('us'))
     ])
     
     # Process in chunks to manage memory
@@ -274,11 +290,13 @@ def transform_inverter_chunk(df):
         mask = df[col].notna()
         if mask.any():
             signals.append(pd.DataFrame({
-                'signal_id': signal_id,
-                'created_at': df.loc[mask, 'created_at'],
-                'scaled_value': df.loc[mask, col].astype(float),
-                'node': 'inverter',
-                'millis': df.loc[mask, 'millis']
+                'timestamp': df.loc[mask, 'millis'],
+                'vehicle_id': 'gr24',
+                'name': signal_id,
+                'value': df.loc[mask, col].astype(float),
+                'raw_value': 0,
+                'produced_at': df.loc[mask, 'created_at'],
+                'created_at': pd.Timestamp.now()
             }))
     
     # Process boolean columns
@@ -286,11 +304,13 @@ def transform_inverter_chunk(df):
         mask = df[col].notna()
         if mask.any():
             signals.append(pd.DataFrame({
-                'signal_id': signal_id,
-                'created_at': df.loc[mask, 'created_at'],
-                'scaled_value': df.loc[mask, col].astype(float),
-                'node': 'inverter',
-                'millis': df.loc[mask, 'millis']
+                'timestamp': df.loc[mask, 'millis'],
+                'vehicle_id': 'gr24',
+                'name': signal_id,
+                'value': df.loc[mask, col].astype(float),
+                'raw_value': 0,
+                'produced_at': df.loc[mask, 'created_at'],
+                'created_at': pd.Timestamp.now()
             }))
     
     if signals:
@@ -307,11 +327,13 @@ def process_inverter_data():
     
     # Define PyArrow schema
     schema = pa.schema([
-        ('signal_id', pa.string()),
-        ('created_at', pa.timestamp('us')),
-        ('scaled_value', pa.float64()),
-        ('node', pa.string()),
-        ('millis', pa.int64())
+        ('timestamp', pa.int64()),
+        ('vehicle_id', pa.string()),
+        ('name', pa.string()),
+        ('value', pa.float64()),
+        ('raw_value', pa.int64()),
+        ('produced_at', pa.timestamp('us')),
+        ('created_at', pa.timestamp('us'))
     ])
     
     # Process in chunks to manage memory
@@ -357,11 +379,13 @@ def transform_pedal_chunk(df):
         mask = df[col].notna()
         if mask.any():
             signals.append(pd.DataFrame({
-                'signal_id': signal_id,
-                'created_at': df.loc[mask, 'created_at'],
-                'scaled_value': df.loc[mask, col].astype(float),
-                'node': 'pedal',
-                'millis': df.loc[mask, 'millis']
+                'timestamp': df.loc[mask, 'millis'],
+                'vehicle_id': 'gr24',
+                'name': signal_id,
+                'value': df.loc[mask, col].astype(float),
+                'raw_value': 0,
+                'produced_at': df.loc[mask, 'created_at'],
+                'created_at': pd.Timestamp.now()
             }))
     
     if signals:
@@ -378,11 +402,13 @@ def process_pedal_data():
     
     # Define PyArrow schema
     schema = pa.schema([
-        ('signal_id', pa.string()),
-        ('created_at', pa.timestamp('us')),
-        ('scaled_value', pa.float64()),
-        ('node', pa.string()),
-        ('millis', pa.int64())
+        ('timestamp', pa.int64()),
+        ('vehicle_id', pa.string()),
+        ('name', pa.string()),
+        ('value', pa.float64()),
+        ('raw_value', pa.int64()),
+        ('produced_at', pa.timestamp('us')),
+        ('created_at', pa.timestamp('us'))
     ])
     
     # Process in chunks to manage memory
@@ -439,11 +465,13 @@ def transform_mobile_chunk(df):
         mask = df[col].notna()
         if mask.any():
             signals.append(pd.DataFrame({
-                'signal_id': signal_id,
-                'created_at': df.loc[mask, 'created_at'],
-                'scaled_value': df.loc[mask, col].astype(float),
-                'node': 'mobile',
-                'millis': df.loc[mask, 'millis']
+                'timestamp': df.loc[mask, 'millis'],
+                'vehicle_id': 'gr24',
+                'name': signal_id,
+                'value': df.loc[mask, col].astype(float),
+                'raw_value': 0,
+                'produced_at': df.loc[mask, 'created_at'],
+                'created_at': pd.Timestamp.now()
             }))
     
     if signals:
@@ -460,11 +488,13 @@ def process_mobile_data():
     
     # Define PyArrow schema
     schema = pa.schema([
-        ('signal_id', pa.string()),
-        ('created_at', pa.timestamp('us')),
-        ('scaled_value', pa.float64()),
-        ('node', pa.string()),
-        ('millis', pa.int64())
+        ('timestamp', pa.int64()),
+        ('vehicle_id', pa.string()),
+        ('name', pa.string()),
+        ('value', pa.float64()),
+        ('raw_value', pa.int64()),
+        ('produced_at', pa.timestamp('us')),
+        ('created_at', pa.timestamp('us'))
     ])
     
     # Process in chunks to manage memory
