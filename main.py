@@ -1,3 +1,4 @@
+import time
 import pandas as pd
 import sqlalchemy
 from datetime import datetime
@@ -72,8 +73,8 @@ def transform_acu_chunk(df):
         mask = df[col].notna()
         if mask.any():
             signals.append(pd.DataFrame({
-                'timestamp': df.loc[mask, 'millis'],
-                'vehicle_id': 'gr24',  # Add appropriate vehicle ID
+                'timestamp': df.loc[mask, 'created_at'].astype('int64') // 1000,  # Convert to milliseconds
+                'vehicle_id': 'gr24_main',  # Add appropriate vehicle ID
                 'name': signal_id,
                 'value': df.loc[mask, col].astype(float),
                 'raw_value': 0,  # Convert to nullable integer
@@ -86,8 +87,8 @@ def transform_acu_chunk(df):
         mask = df[col].notna()
         if mask.any():
             signals.append(pd.DataFrame({
-                'timestamp': df.loc[mask, 'millis'],
-                'vehicle_id': 'gr24',  # Add appropriate vehicle ID
+                'timestamp': df.loc[mask, 'created_at'].astype('int64') // 1000,  # Convert to milliseconds
+                'vehicle_id': 'gr24_main',  # Add appropriate vehicle ID
                 'name': signal_id,
                 'value': df.loc[mask, col].astype(float),
                 'raw_value': 0,
@@ -176,8 +177,8 @@ def transform_vdm_chunk(df):
         mask = df[col].notna()
         if mask.any():
             signals.append(pd.DataFrame({
-                'timestamp': df.loc[mask, 'millis'],
-                'vehicle_id': 'gr24',
+                'timestamp': df.loc[mask, 'created_at'].astype('int64') // 1000,  # Convert to milliseconds
+                'vehicle_id': 'gr24_main',
                 'name': signal_id,
                 'value': df.loc[mask, col].astype(float),
                 'raw_value': 0,
@@ -190,8 +191,8 @@ def transform_vdm_chunk(df):
         mask = df[col].notna()
         if mask.any():
             signals.append(pd.DataFrame({
-                'timestamp': df.loc[mask, 'millis'],
-                'vehicle_id': 'gr24',
+                'timestamp': df.loc[mask, 'created_at'].astype('int64') // 1000,  # Convert to milliseconds
+                'vehicle_id': 'gr24_main',
                 'name': signal_id,
                 'value': df.loc[mask, col].astype(float),
                 'raw_value': 0,
@@ -290,8 +291,8 @@ def transform_inverter_chunk(df):
         mask = df[col].notna()
         if mask.any():
             signals.append(pd.DataFrame({
-                'timestamp': df.loc[mask, 'millis'],
-                'vehicle_id': 'gr24',
+                'timestamp': df.loc[mask, 'created_at'].astype('int64') // 1000,  # Convert to milliseconds
+                'vehicle_id': 'gr24_main',
                 'name': signal_id,
                 'value': df.loc[mask, col].astype(float),
                 'raw_value': 0,
@@ -304,8 +305,8 @@ def transform_inverter_chunk(df):
         mask = df[col].notna()
         if mask.any():
             signals.append(pd.DataFrame({
-                'timestamp': df.loc[mask, 'millis'],
-                'vehicle_id': 'gr24',
+                'timestamp': df.loc[mask, 'created_at'].astype('int64') // 1000,  # Convert to milliseconds
+                'vehicle_id': 'gr24_main',
                 'name': signal_id,
                 'value': df.loc[mask, col].astype(float),
                 'raw_value': 0,
@@ -379,8 +380,8 @@ def transform_pedal_chunk(df):
         mask = df[col].notna()
         if mask.any():
             signals.append(pd.DataFrame({
-                'timestamp': df.loc[mask, 'millis'],
-                'vehicle_id': 'gr24',
+                'timestamp': df.loc[mask, 'created_at'].astype('int64') // 1000,  # Convert to milliseconds
+                'vehicle_id': 'gr24_main',
                 'name': signal_id,
                 'value': df.loc[mask, col].astype(float),
                 'raw_value': 0,
@@ -465,8 +466,8 @@ def transform_mobile_chunk(df):
         mask = df[col].notna()
         if mask.any():
             signals.append(pd.DataFrame({
-                'timestamp': df.loc[mask, 'millis'],
-                'vehicle_id': 'gr24',
+                'timestamp': df.loc[mask, 'created_at'].astype('int64') // 1000,  # Convert to milliseconds
+                'vehicle_id': 'gr24_main',
                 'name': signal_id,
                 'value': df.loc[mask, col].astype(float),
                 'raw_value': 0,
